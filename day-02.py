@@ -7,9 +7,9 @@ for line in file:
   data.append( (dir,int(dist)) )
 file.close()
 
+# part 1
 x = y = 0
 for (dir,dist) in data:
-    print( dir, dist )
     if dir == 'forward':
         x += dist
     elif dir == 'up':
@@ -19,9 +19,9 @@ for (dir,dist) in data:
 
 print( x * y )
 
+# part 2
 x = y = aim = 0
 for (dir,dist) in data:
-    print( dir, dist )
     if dir == 'forward':
         x += dist
         y += (aim * dist)
