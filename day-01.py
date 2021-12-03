@@ -6,17 +6,16 @@ for line in file:
   data.append( num )
 file.close()
 
-
+# part one
 cur = None
 count = 0
 for d in data:
     if cur is not None and d > cur:
         count += 1
     cur = d
-
 print( count )
 
-
+# part two
 prev = None
 count = 0
 i = 2
@@ -27,5 +26,4 @@ while i < len(data):
 
     prev = cur
     i += 1
-
 print( count )
