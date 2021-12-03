@@ -9,6 +9,7 @@ file.close()
 SIZE = len(data[0])
 NUM_LINES = len(data)
 
+# part one
 ones = [0]*SIZE
 for line in data:
   i = 0
@@ -26,9 +27,7 @@ for digit in ones:
     epsilon[i] = '0'
   i += 1
 
-gamma = int(''.join(gamma), 2 )
-epsilon = int(''.join(epsilon), 2 )
-print( gamma * epsilon )
+print( int(''.join(gamma), 2 ) *  int(''.join(epsilon), 2 ) )
 
 # part two
 def part_two( data, keep_most_common = True ):
@@ -57,8 +56,7 @@ def part_two( data, keep_most_common = True ):
         else:
           d.pop(j)
           if len(d) == 1:
-            d = int(''.join(d), 2)
-            return d
+            return int(''.join(d), 2)
 
       i += 1
 
