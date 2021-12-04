@@ -53,55 +53,55 @@ class Board:
         return NO_BINGO
 
 # ----------------------------
-def part_one():
-    for number in g_called_numbers:
-        for b in g_boards:
-            remaining_sum = b.mark( number )
+def part_one(boards, called_numbers):
+    for number in called_numbers:
+        for board in boards:
+            remaining_sum = board.mark( number )
             if remaining_sum != NO_BINGO:
                 print( "Bingo!", remaining_sum, '*', number, '=', remaining_sum*int(number))
                 return
 
-def part_two():
-    for number in g_called_numbers:
-        board_count = 0
-        for b in g_boards:
-            remaining_sum = b.mark( number )
+def part_two(boards, called_numbers):
+    for number in called_numbers:
+        for board in boards:
+            remaining_sum = board.mark( number )
             if remaining_sum != NO_BINGO:
+                # found a bingo ... but is it the LAST bingo?
                 done = True
-                count = 0
-                for x in g_boards:
-                    if not x.has_bingo():
+                for check_board in boards:
+                    if not check_board.has_bingo():
                         done = False
                         break
-                    count += 1
 
                 if done:
                     print( "Last Bingo:", remaining_sum, '*', number, '=', remaining_sum*int(number))
                     return
 
-            board_count += 1
-
-# --- main ---
-file = open('day-04.txt', 'r')
-g_called_numbers = None
-board_array = []
-g_boards = []
-for line in file:
-    line = line.strip()
-    if  not g_called_numbers:
-        g_called_numbers = line.split(',')
-        continue
-
-    if len(line) == 0:
-        if len(board_array) == 0:
+# ----------------------------
+def main():
+    file = open('day-04.txt', 'r')
+    called_numbers = None
+    board_array = []
+    boards = []
+    for line in file:
+        line = line.strip()
+        if  not called_numbers:
+            called_numbers = line.split(',')
             continue
-        new_board = Board( board_array )
-        g_boards.append( new_board )
-        board_array = []
-    else:
-        current_row = line.split()
-        board_array.append(current_row)
-file.close()
 
-part_one()
-part_two()
+        if len(line) == 0:
+            if len(board_array) == 0:
+                continue
+            new_board = Board( board_array )
+            boards.append( new_board )
+            board_array = []
+        else:
+            current_row = line.split()
+            board_array.append(current_row)
+    file.close()
+
+    part_one(boards, called_numbers)
+    part_two(boards, called_numbers)
+
+if __name__ == "__main__":
+    main()
