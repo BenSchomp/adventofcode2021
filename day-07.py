@@ -25,6 +25,11 @@ def go( part_one=True ):
   return int(lowest_fuel)
 
 import statistics
+
+# a much more efficient solution is to calculate the approximate target location
+# this requires calculating the median for part one, and the mean (average) for part two
+# median will be spot on, but mean will be an average - requiring neighboring locations to
+#  also be calculated to ensure the lowest fuel cost is found
 def go_efficient( part_one=True ):
   if( part_one ):
     calculated_target = int(statistics.median(data))
