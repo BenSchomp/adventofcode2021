@@ -13,9 +13,6 @@ for line in file:
 file.close()
 
 def traverse( id, seen ):
-  #if id == 'start' and 'start' in seen:
-    #return
-
   if id[0].islower() and id in seen:
     if seen[0] == None: # part one
       return
@@ -25,8 +22,8 @@ def traverse( id, seen ):
 
   seen.append(id)
 
-  # found a path!
   if id == 'end':
+    # found a path!
     global count
     count += 1
     #print( ','.join(seen[1:]) )
@@ -36,10 +33,12 @@ def traverse( id, seen ):
   for cur in caves[id]:
     traverse( cur, seen.copy() )
 
+# --- part one ---
 count = 0
 traverse( 'start', [None] )
 print(count)
 
+# --- part two ---
 count = 0
 traverse( 'start', [False] )
 print(count)
