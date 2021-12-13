@@ -9,7 +9,7 @@ for line in file:
     grid_parse = False
   elif grid_parse:
     (x,y) = map(int, line.split( ',' ))
-    points.append( (x,y) )
+    points.append((x,y))
     if x > max_x:
       max_x = x
     if y > max_y:
@@ -32,7 +32,7 @@ def display():
       if c == 1:
         print( '#', end='' )
       else:
-        print( '.', end='' )
+        print( ' ', end='' )
     print()
   print()
 
@@ -49,14 +49,14 @@ for fold in folds:
   val = int(fold[1])
   height = len(grid)
   width = len(grid[0])
+
   if fold[0] == 'y':
     # horizontal folds
     for dy in range( 1, height-val ):
       for x in range( width ):
         if grid[val+dy][x] == 1:
           grid[val-dy][x] = 1
-
-    # trip at fold and below
+    # trim at fold (and below)
     while len(grid) > val:
       del grid[-1]
 
@@ -66,8 +66,7 @@ for fold in folds:
       for dx in range( 1, width-val ):
         if grid[y][val+dx] == 1:
           grid[y][val-dx] = 1
-
-    # trim at fold and right
+    # trim at fold (and right)
     for y in range(height):
       for x in range(width-val):
         del grid[y][-1]
