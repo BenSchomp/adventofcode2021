@@ -1,20 +1,31 @@
+import copy
+
 file = open('day-15.txt', 'r')
-grid = []
+init_grid = []
 for line in file:
   line = line.strip()
   row = []
   for c in line:
     row.append(int(c))
-  grid.append(row)
+  init_grid.append(row)
 file.close()
-height = len(grid)
-width = len(grid[0])
+height = len(init_grid)
+width = len(init_grid[0])
 
-def display():
+def part_two_expansion( grid ):
+  new_grid = []
+
+  #for row in grid:
+    #new_row
+    #for c in row:
+
+
+def display( grid ):
   for row in grid:
     print( ''.join(map(str,row)) )
+  print()
 
-def display_path( path ):
+def display_path( grid ):
   for y in range(height):
     for x in range(width):
       if (x,y) == path[-1]:
@@ -26,54 +37,95 @@ def display_path( path ):
     print()
   print()
 
-min_risk = None
-count = 0
+def dijkstra( grid ):
+  global heigh, width
+  unvisited = []
+  for y in range(height):
+    for x in range(width):
+      unvisited.append( (x,y) )
 
-def walk( x, y, path, risk ):
-  global grid, min_risk, width, height, count
+  shortest = {}
+  previous = {}
 
-  path.append( (x,y) )
-  risk += grid[y][x]
-  #display_path(path)
+  for p in unvisited:
+    shortest[p] = 999999999
+  shortest[(0,0)] = 0
 
-  if min_risk and risk >= min_risk:
-    # if this new path is riskier than than best path ... abort
-    return
+  while unvisited:
+    cur_min_loc = None
+    for p in unvisited:
+      if not cur_min_loc or shortest[p] < shortest[cur_min_loc]:
+        cur_min_loc = p
 
-  if x == width-1 and y == height-1:
-    if not min_risk or risk < min_risk:
-      min_risk = risk
-    count += 1
-    print( 'made it:', count, risk, min_risk )
-    #display_path(path)
-    return
-
-  elif (x == width-1 and y == height-2) or (x == width-2 and y == height-1):
-    # if you're next to the destination, for lowest path, only choice is to go directly to end
-    walk( width-1, height-1, path.copy(), risk )
-
-  else:
+    (x,y) = (cur_min_loc[0], cur_min_loc[1])
     for move in [(1,0), (0,1), (-1,0), (0,-1)]:
-      dx = move[0]
-      dy = move[1]
+      (dx, dy) = (move[0], move[1])
+      (new_x, new_y) = (x+dx, y+dy)
 
-      if y == height-1 and dx == -1:
-        # once you're on the bottom row, going left only traps you
-        continue
-      elif x == width and dy == -1:
-        # once you're on the right col, going up only traps you
-        continue
-      elif x == 0 and dy == -1:
-        # once you're on the left col, going up only traps you
-        continue
-      elif y == 0 and dy == -1:
-        # once you're on the top row, going left only traps you
-        continue
+      if 0<=new_x<width and 0<=new_y<height:
+        cur_value = shortest[cur_min_loc] + grid[new_y][new_x]
+        if cur_value < shortest[(new_x,new_y)]:
+          shortest[(new_x, new_y)] = cur_value
+          previous[(new_x, new_y)] = cur_min_loc
 
-      if 0<=x+dx<width and 0<=y+dy<height and not (x+dx,y+dy) in path:
-        # if its in bounds and we've not been there on this path, go there
-        walk( x+dx, y+dy, path.copy(), risk )
+    unvisited.remove( cur_min_loc )
 
-x = []
-walk( 0, 0, x.copy(), grid[0][0]*-1 )
-print( min_risk )
+  print( shortest[(width-1, height-1)] )
+
+def expanded_grid_value( grid, x, y ):
+  global height, width
+  (x_mult, y_mult) = ( int(x/width), int(y/height) )
+
+  value = grid[y%height][x%width]
+  value += x_mult + y_mult
+
+  if value > 9:
+    value -= 9
+
+  return value
+
+def dijkstra_two( grid ):
+  global height, width
+
+  unvisited = []
+  for y in range(height*5):
+    for x in range(width*5):
+      unvisited.append( (x,y) )
+
+  shortest = {}
+  previous = {}
+
+  for p in unvisited:
+    shortest[p] = 999999999
+  shortest[(0,0)] = 0
+
+  while unvisited:
+    cur_min_loc = None
+    for p in unvisited:
+      if not cur_min_loc or shortest[p] < shortest[cur_min_loc]:
+        cur_min_loc = p
+
+    (x,y) = (cur_min_loc[0], cur_min_loc[1])
+
+    if x == (width*5)-1 and y == (height*5)-1:
+      print( shortest[((width*5)-1, (height*5)-1)] )
+      #return
+
+    for move in [(1,0), (0,1), (-1,0), (0,-1)]:
+      (dx, dy) = (move[0], move[1])
+      (new_x, new_y) = (x+dx, y+dy)
+
+      if 0<=new_x<(width*5) and 0<=new_y<(height*5):
+        cur_value = shortest[cur_min_loc] + expanded_grid_value(grid, new_x, new_y)
+        if cur_value < shortest[(new_x,new_y)]:
+          shortest[(new_x, new_y)] = cur_value
+          previous[(new_x, new_y)] = cur_min_loc
+
+    unvisited.remove( cur_min_loc )
+
+  print( shortest[((width*5)-1, (height*5)-1)] )
+
+expanded_grid_value( init_grid, 48, 49 )
+
+#dijkstra( init_grid )
+dijkstra_two( init_grid )
