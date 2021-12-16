@@ -12,29 +12,9 @@ file.close()
 height = len(init_grid)
 width = len(init_grid[0])
 
-def part_two_expansion( grid ):
-  new_grid = []
-
-  #for row in grid:
-    #new_row
-    #for c in row:
-
-
 def display( grid ):
   for row in grid:
     print( ''.join(map(str,row)) )
-  print()
-
-def display_path( grid ):
-  for y in range(height):
-    for x in range(width):
-      if (x,y) == path[-1]:
-        print( '#', end='')
-      elif (x,y) in path:
-        print( '+', end='')
-      else:
-        print( grid[y][x], end='' )
-    print()
   print()
 
 def dijkstra( grid ):
@@ -127,5 +107,5 @@ def dijkstra_two( grid ):
 
 expanded_grid_value( init_grid, 48, 49 )
 
-#dijkstra( init_grid )
-dijkstra_two( init_grid )
+dijkstra( init_grid )
+dijkstra_two( init_grid ) # this still takes too long - use priority queue for better performance
