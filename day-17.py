@@ -7,20 +7,20 @@ target_x = (138, 184)
 target_y = (-125, -71)
 
 hit_count = 0
-overall_max = [0, 0, 0]
+y_max_overall = 0
+overall_ma0 = [0, 0, 0]
 for init_dx in range(250):
   for init_dy in range(-250,250):
     x = y = 0
     dx = init_dx
     dy = init_dy
-    y_max = [0, 0, 0]
+    y_max = 0
     count = 0
     hit = False
     while True:
       #print( "%d. (%d, %d) ... [%d, %d]" % (count, x, y, dx, dy) )
       if x >= target_x[0] and x <= target_x[1] and \
          y >= target_y[0] and y <= target_y[1]:
-        #print( 'hit ... ', init_dx, init_dy )
         hit = True
         hit_count += 1
         break
@@ -34,17 +34,17 @@ for init_dx in range(250):
         dx += 1
       dy -= 1
 
-      if y > y_max[0]:
-        (y_max[0], y_max[1], y_max[2]) = (y, init_dx, init_dy)
+      if y > y_max:
+        y_max = y
 
       if x > target_x[1] or y < target_y[0]:
         break
 
       count += 1
 
-    if hit and y_max[0] > overall_max[0]:
-      overall_max = y_max
+    if hit and y_max > y_max_overall:
+      y_max_overall = y_max
       #print( '! new max:', overall_max )
 
-print( 'part one:', overall_max[0] )
+print( 'part one:', y_max_overall )
 print( 'part two:', hit_count )
