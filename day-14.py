@@ -9,85 +9,52 @@ for line in file:
     continue
   else:
     (left, right) = line.split(' -> ')
-    mapping[left] = left[0] + right + left[1]
+    mapping[left] = [0, left[0] + right, right + left[1]]
 file.close()
 
 print( starting_polymer )
-print( mapping )
 
 def expand( polymer, depth ):
-  #print( '    '*depth, '-', polymer, '...', depth )
   global mapping
 
-  if depth <= 0 or len(polymer) < 2:
-    # base case
-    #print( '    '*(5-depth), '-', polymer )
-    return polymer
+  for i in range(len(polymer)-1):
+    mapping[polymer[i]+polymer[i+1]][0] += 1
 
-  elif polymer in mapping:
-    # expand via lookup
-    #print( '    '*depth, '#', polymer, mapping[polymer] )
-    # RIGHT HERE
-    #if we have more mappings, return expand( mapping[polymer], depth-expanded_depth )
-    asdf = False
-    next = mapping[polymer]
-    while next in mapping and depth > 0:
-      asdf = True
-      depth -= 1
-      print( polymer, next, depth, mapping[next] )
-      next = mapping[next]
+  while depth > 0:
+    cur_pairs = {}
+    for k, v in mapping.items():
+      if v[0] > 0:
+        cur_pairs[k] = v[0]
 
-    #if x in mapping:
-      #print( polymer, mapping[polymer], x, mapping[x] )
-      #exit()
-    return expand( next, depth-1 )
+    for k, count in cur_pairs.items():
+      v = mapping[k]
+      mapping[k][0] -= count
+      mapping[v[1]][0] += count
+      mapping[v[2]][0] += count
 
-    #return expand( mapping[polymer], depth-1 )
+    depth -= 1
 
-  else:
-    # divide and conquer
-    l = len(polymer)
-    left  = polymer[:int(l/2)]
-    right = polymer[int(l/2):]
-    mid   = str(left[-1]+right[0])
+  counts = {}
+  for k, v in mapping.items():
+    if k[0] not in counts: # only count first letter of pairs
+      counts[k[0]] = v[0]
+    else:
+      counts[k[0]] += v[0]
+  counts[polymer[-1]] += 1 # add in the second letter of the last pair
 
-    x = expand( left, depth )
-    y = expand( mid, depth )
-    z = expand( right, depth )
+  # find count min and max
+  count_min = count_max = None
+  for k, v in counts.items():
+    if not count_min or v < count_min:
+      count_min = v
+    if not count_max or v > count_max:
+      count_max = v
 
-    result = x + y[1:-1] + z
-    #print( '    '*depth, '+', polymer, left, mid, right, x, y, z )
+  return count_max - count_min
 
-    if len(result) == len(polymer)*2-1 and not polymer in mapping:
-      mapping[polymer] = result
+print( 'part one:', expand( starting_polymer, 10 ) )
+# reset
+for k, v in mapping.items():
+  mapping[k][0] = 0
 
-    return result
-
-d = 7
-result = expand( starting_polymer, d )
-print( result )
-if d == 3 and result != 'NBBBCNCCNBBNBNBBCHBHHBCHB':
-  print( '!! MISMATCH !!' )
-  exit()
-elif d == 4 and result != 'NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB':
-  print( '!! MISMATCH !!' )
-  exit()
-
-
-counts = {}
-for letter in result:
-  if not letter in counts:
-    counts[letter] = 1
-  else:
-    counts[letter] += 1
-print( counts )
-
-count_min = count_max = None
-for k, v in counts.items():
-  if not count_min or v < count_min:
-    count_min = v
-  if not count_max or v > count_max:
-    count_max = v
-
-print( count_max - count_min )
-print( mapping )
+print( 'part two:', expand( starting_polymer, 40 ) )
